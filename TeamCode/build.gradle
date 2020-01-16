@@ -20,6 +20,7 @@ dependencies {
     implementation project(':HOMAR-FTC-Library')
     implementation 'com.github.dogecv:dogecv:2020.4-alpha'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.acmerobotics.roadrunner:core:0.4.7'
 }
 repositories {
     mavenCentral()
