@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import edu.spa.ftclib.internal.state.ToggleBoolean
 import edu.spa.ftclib.internal.state.ToggleDouble
-import java.lang.Math.toDegrees
 
 @TeleOp
 class Drive : OpMode() {
@@ -12,8 +11,8 @@ class Drive : OpMode() {
 
     private var speed = 1.0
     private val reverse = ToggleBoolean()
-    private val leftPullerPos = ToggleDouble(doubleArrayOf(1.0, 0.3))
-    private val rightPullerPos = ToggleDouble(doubleArrayOf(0.0, 0.67))
+    private val leftArmUp = ToggleBoolean()
+    private val rightArmUp = ToggleBoolean()
 
     private val clawPos = ToggleDouble(doubleArrayOf(0.3, 0.5))
     private val flickerPos = ToggleDouble(doubleArrayOf(1.0, 0.0))
@@ -30,16 +29,10 @@ class Drive : OpMode() {
 
     override fun loop() {
         with(hardware) {
-            telemetry.addData("Left", toDegrees(leftIMU.angularOrientation.firstAngle.toDouble()))
-            telemetry.addData("Right", toDegrees(rightIMU.angularOrientation.firstAngle.toDouble()))
-            telemetry.addData("Heading", toDegrees(drivetrain.currentHeading))
-            telemetry.addData("Target", toDegrees(drivetrain.targetHeading))
-            telemetry.update()
-
             with(gamepad1) {
                 reverse.input(x)
-                leftPullerPos.input(left_bumper)
-                rightPullerPos.input(right_bumper)
+                leftArmUp.input(left_bumper)
+                rightArmUp.input(right_bumper)
 
                 when {
                     dpad_up ->
@@ -52,7 +45,7 @@ class Drive : OpMode() {
                         speed = 0.2
                 }
 
-                setMecanumPowerGyro(
+                setMecanumPower(
                     -left_stick_y.toDouble(),
                     left_stick_x.toDouble(),
                     right_stick_x.toDouble(),
@@ -60,8 +53,10 @@ class Drive : OpMode() {
                     reverse.output()
                 )
 
-                setLeftPullerPosition(leftPullerPos.output())
-                setRightPullerPosition(rightPullerPos.output())
+                setLeftArmPosition(if (leftArmUp.output()) ArmPosition.UP else ArmPosition.DOWN)
+                setLeftGrabberPosition(GrabberPosition.CLOSED)
+                setRightArmPosition(if (rightArmUp.output()) ArmPosition.UP else ArmPosition.DOWN)
+                setRightGrabberPosition(GrabberPosition.CLOSED)
             }
 
             with(gamepad2) {
