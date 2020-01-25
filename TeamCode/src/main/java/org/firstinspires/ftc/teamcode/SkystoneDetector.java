@@ -34,9 +34,9 @@ public class SkystoneDetector extends OpenCvPipeline {
     );
 
     private final Point[] stoneCenters = {
-            new Point(150, 810),
-            new Point(350, 790),
-            new Point(550, 770)
+            new Point(150, 760),
+            new Point(350, 740),
+            new Point(550, 720)
     };
 
     /**

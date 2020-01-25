@@ -52,10 +52,8 @@ open class Hardware(hardwareMap: HardwareMap, protected val telemetry: Telemetry
             rightIMU = get(BNO055IMUImpl::class.java, "r imu")
         }
 
-        wheels = arrayOf(frontLeft, frontRight, backLeft, backRight)
+        wheels = arrayOf(frontLeft, backLeft, frontRight, backRight)
 
-        frontLeft.direction = Direction.REVERSE
-        backLeft.direction = Direction.REVERSE
         slide.direction = Direction.REVERSE
         rightSuck.direction = Direction.REVERSE
 
@@ -104,15 +102,15 @@ open class Hardware(hardwareMap: HardwareMap, protected val telemetry: Telemetry
         forwards: Double,
         strafe: Double,
         turn: Double,
-        speed: Double,
-        reverse: Boolean
+        speed: Double = 1.0,
+        reverse: Boolean = false
     ) {
         val forwards0 = if (reverse) -forwards else forwards
         val strafe0 = if (reverse) -strafe else strafe
 
-        frontLeft.power = (forwards0 - strafe0 + turn) * speed
+        frontLeft.power = -(forwards0 - strafe0 + turn) * speed
         frontRight.power = (forwards0 + strafe0 - turn) * speed
-        backLeft.power = (forwards0 + strafe0 + turn) * speed
+        backLeft.power = -(forwards0 + strafe0 + turn) * speed
         backRight.power = (forwards0 - strafe0 - turn) * speed
     }
 
@@ -127,11 +125,11 @@ open class Hardware(hardwareMap: HardwareMap, protected val telemetry: Telemetry
 }
 
 enum class ArmPosition(val left: Double, val right: Double) {
-    UP(1.0, 0.0),
-    DOWN(0.8, 0.2)
+    UP(0.5, 0.4),
+    DOWN(0.25, 0.65)
 }
 
 enum class GrabberPosition(val left: Double, val right: Double) {
-    OPEN(0.5, 0.5),
+    OPEN(0.4, 0.58),
     CLOSED(0.0, 1.0)
 }

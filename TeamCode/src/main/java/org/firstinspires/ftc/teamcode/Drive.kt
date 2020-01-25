@@ -12,7 +12,9 @@ class Drive : OpMode() {
     private var speed = 1.0
     private val reverse = ToggleBoolean()
     private val leftArmUp = ToggleBoolean()
+    private val leftGrabberOpen = ToggleBoolean()
     private val rightArmUp = ToggleBoolean()
+    private val rightGrabberOpen = ToggleBoolean()
 
     private val clawPos = ToggleDouble(doubleArrayOf(0.3, 0.5))
     private val flickerPos = ToggleDouble(doubleArrayOf(1.0, 0.0))
@@ -32,7 +34,9 @@ class Drive : OpMode() {
             with(gamepad1) {
                 reverse.input(x)
                 leftArmUp.input(left_bumper)
+                leftGrabberOpen.input(left_trigger > 0)
                 rightArmUp.input(right_bumper)
+                rightGrabberOpen.input(right_trigger > 0)
 
                 when {
                     dpad_up ->
@@ -53,10 +57,18 @@ class Drive : OpMode() {
                     reverse.output()
                 )
 
-                setLeftArmPosition(if (leftArmUp.output()) ArmPosition.UP else ArmPosition.DOWN)
-                setLeftGrabberPosition(GrabberPosition.CLOSED)
-                setRightArmPosition(if (rightArmUp.output()) ArmPosition.UP else ArmPosition.DOWN)
-                setRightGrabberPosition(GrabberPosition.CLOSED)
+                setLeftArmPosition(
+                    if (leftArmUp.output()) ArmPosition.UP else ArmPosition.DOWN
+                )
+                setLeftGrabberPosition(
+                    if (leftGrabberOpen.output()) GrabberPosition.OPEN else GrabberPosition.CLOSED
+                )
+                setRightArmPosition(
+                    if (rightArmUp.output()) ArmPosition.UP else ArmPosition.DOWN
+                )
+                setRightGrabberPosition(
+                    if (rightGrabberOpen.output()) GrabberPosition.OPEN else GrabberPosition.CLOSED
+                )
             }
 
             with(gamepad2) {
