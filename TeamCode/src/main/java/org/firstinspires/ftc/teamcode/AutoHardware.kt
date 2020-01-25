@@ -1,56 +1,26 @@
 package org.firstinspires.ftc.teamcode
 
-import com.acmerobotics.roadrunner.control.PIDCoefficients
-import com.acmerobotics.roadrunner.drive.MecanumDrive
-import com.acmerobotics.roadrunner.followers.HolonomicPIDVAFollower
-import com.acmerobotics.roadrunner.geometry.Pose2d
-import com.qualcomm.hardware.bosch.BNO055IMU
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.hardware.DcMotor.RunMode
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.openftc.easyopencv.OpenCvCameraRotation
 import org.openftc.easyopencv.OpenCvInternalCamera
 import org.openftc.easyopencv.OpenCvInternalCamera.CameraDirection
+import kotlin.math.abs
+
+const val DEFAULT_SPEED = 0.6
+const val DEFAULT_TIMEOUT = 10.0
 
 class AutoHardware(private val linearOpMode: LinearOpMode) :
     Hardware(linearOpMode.hardwareMap, linearOpMode.telemetry) {
     private val timer = ElapsedTime()
     private val skystoneDetector = SkystoneDetector(telemetry)
 
-    private val drive = object : MecanumDrive(0.0, 0.0, 0.0, 0.0) {
-        override val rawExternalHeading: Double
-            get() = (leftIMU.angularOrientation.firstAngle + rightIMU.angularOrientation.firstAngle) / 2.0
-
-        override fun getWheelPositions(): List<Double> =
-            wheels.map { it.currentPosition.toDouble() }
-
-        override fun setMotorPowers(
-            frontLeft: Double,
-            rearLeft: Double,
-            rearRight: Double,
-            frontRight: Double
-        ) {
-            this@AutoHardware.frontLeft.power = frontLeft
-            this@AutoHardware.backLeft.power = rearLeft
-            this@AutoHardware.backRight.power = rearRight
-            this@AutoHardware.frontRight.power = frontRight
-        }
-    }
-
-    private val movePID = PIDCoefficients(5.0, 0.0, 0.0)
-    private val turnPID = PIDCoefficients(2.0, 0.0, 0.0)
-
-    private val pathFollower = HolonomicPIDVAFollower(movePID, movePID, turnPID)
 
     internal val skystonePosition: Int
         get() = skystoneDetector.skystonePosition()
 
-    init {
-        initGyros()
-        initSkystoneDetector()
-    }
-
-    private fun initSkystoneDetector() {
+    internal fun initSkystoneDetector() {
         val cameraViewId = linearOpMode.hardwareMap.appContext.run {
             resources.getIdentifier("cameraMonitorViewId", "id", packageName)
         }
@@ -62,32 +32,92 @@ class AutoHardware(private val linearOpMode: LinearOpMode) :
         }
     }
 
-    private fun initGyros() {
-        leftIMU.initialize(BNO055IMU.Parameters().apply {
-            angleUnit = BNO055IMU.AngleUnit.RADIANS
-            accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC
-            loggingEnabled = true
-            loggingTag = "Left IMU"
-            accelerationIntegrationAlgorithm = JustLoggingAccelerationIntegrator()
-        })
+    // Back is treated as front for autonomous movement
 
-        rightIMU.initialize(BNO055IMU.Parameters().apply {
-            angleUnit = BNO055IMU.AngleUnit.RADIANS
-            accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC
-            loggingEnabled = true
-            loggingTag = "Right IMU"
-            accelerationIntegrationAlgorithm = JustLoggingAccelerationIntegrator()
-        })
+    internal fun backward(
+        ticks: Int,
+        speed: Double = DEFAULT_SPEED,
+        timeoutS: Double = DEFAULT_TIMEOUT
+    ) = move(ticks, ticks, ticks, ticks, speed, timeoutS, "Backward")
 
-        while (linearOpMode.opModeIsActive() && (!leftIMU.isGyroCalibrated || !rightIMU.isGyroCalibrated)) {
-            telemetry.addLine("Calibrating Gyros")
+    internal fun forward(
+        ticks: Int,
+        speed: Double = DEFAULT_SPEED,
+        timeoutS: Double = DEFAULT_TIMEOUT
+    ) = move(-ticks, -ticks, -ticks, -ticks, speed, timeoutS, "Forward")
+
+    internal fun left(
+        ticks: Int,
+        speed: Double = DEFAULT_SPEED,
+        timeoutS: Double = DEFAULT_TIMEOUT
+    ) = move(-ticks, ticks, ticks, -ticks, speed, timeoutS, "Left")
+
+    internal fun right(
+        ticks: Int,
+        speed: Double = DEFAULT_SPEED,
+        timeoutS: Double = DEFAULT_TIMEOUT
+    ) = move(ticks, -ticks, -ticks, ticks, speed, timeoutS, "Right")
+
+    internal fun turnRight(
+        ticks: Int,
+        speed: Double = DEFAULT_SPEED,
+        timeoutS: Double = DEFAULT_TIMEOUT
+    ) = move(ticks, -ticks, ticks, -ticks, speed, timeoutS, "Right Turn")
+
+    internal fun turnLeft(
+        ticks: Int,
+        speed: Double = DEFAULT_SPEED,
+        timeoutS: Double = DEFAULT_TIMEOUT
+    ) = move(-ticks, ticks, -ticks, ticks, speed, timeoutS, "Left Turn")
+
+    internal fun wait(seconds: Double) {
+        timer.reset()
+        while (timer.seconds() < seconds && linearOpMode.opModeIsActive()) {
+            linearOpMode.idle()
+        }
+    }
+
+    private fun move(
+        flTicks: Int, frTicks: Int, blTicks: Int, brTicks: Int,
+        flSpeed: Double, frSpeed: Double, blSpeed: Double, brSpeed: Double,
+        timeoutS: Double, action: String
+    ) {
+        wheels.forEach { it.mode = RunMode.STOP_AND_RESET_ENCODER }
+
+        frontLeft.targetPosition = flTicks
+        frontRight.targetPosition = frTicks
+        backLeft.targetPosition = blTicks
+        backRight.targetPosition = brTicks
+
+        frontLeft.power = flSpeed
+        frontRight.power = frSpeed
+        backLeft.power = blSpeed
+        backRight.power = brSpeed
+
+        wheels.forEach { it.mode = RunMode.RUN_TO_POSITION }
+
+        timer.reset()
+        while (wheelsBusy() && timer.seconds() < timeoutS && linearOpMode.opModeIsActive()) {
+            telemetry.addLine(action + "\n")
+            telemetry.addData("Motor", "Position |  Target  | Distance")
+            for ((index, wheel) in wheels.withIndex()) {
+                telemetry.addData(
+                    wheelLabels[index],
+                    "%8d | %8d | %8d",
+                    wheel.currentPosition,
+                    wheel.targetPosition,
+                    wheel.targetPosition - wheel.currentPosition
+                )
+            }
             telemetry.update()
         }
     }
 
-    private fun updateMotorPower() {
-        val signal = pathFollower.update(drive.poseEstimate)
+    private fun move(
+        flTicks: Int, frTicks: Int, blTicks: Int, brTicks: Int,
+        speed: Double, timeoutS: Double, action: String
+    ) = move(flTicks, frTicks, blTicks, brTicks, speed, speed, speed, speed, timeoutS, action)
 
-        drive.setDriveSignal(signal)
-    }
+    private fun wheelsBusy(): Boolean =
+        wheels.any { abs(it.targetPosition - it.currentPosition) > 50 }
 }

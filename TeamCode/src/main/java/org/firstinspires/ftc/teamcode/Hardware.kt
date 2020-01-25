@@ -19,6 +19,7 @@ open class Hardware(hardwareMap: HardwareMap, protected val telemetry: Telemetry
     val backLeft: DcMotor
     val backRight: DcMotor
     val wheels: Array<DcMotor>
+    val wheelLabels: Array<String>
 
     private val slide: DcMotor
     private val leftSuck: CRServo
@@ -53,7 +54,10 @@ open class Hardware(hardwareMap: HardwareMap, protected val telemetry: Telemetry
         }
 
         wheels = arrayOf(frontLeft, backLeft, frontRight, backRight)
+        wheelLabels = arrayOf("FL", "FR", "BL", "BR")
 
+        frontLeft.direction = Direction.REVERSE
+        backLeft.direction = Direction.REVERSE
         slide.direction = Direction.REVERSE
         rightSuck.direction = Direction.REVERSE
 
