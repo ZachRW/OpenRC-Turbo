@@ -16,15 +16,14 @@ class RedAuto : LinearOpMode() {
         with(hardware) {
             setClawPosition(0.5)
             setFlickerPosition(0.5)
-            setLeftArmPosition(ArmPosition.DOWN)
-            setRightArmPosition(ArmPosition.DOWN)
-            setLeftGrabberPosition(GrabberPosition.OPEN)
-            setRightGrabberPosition(GrabberPosition.OPEN)
-            wait(1.5)
 
             val stonePosition = skystonePosition
             telemetry.addData("Skystones", stonePosition)
             telemetry.update()
+
+            setLeftArmPosition(ArmPosition.DOWN)
+            setRightArmPosition(ArmPosition.DOWN)
+            wait(1.5)
 
             setRightGrabberPosition(GrabberPosition.OPEN)
 
