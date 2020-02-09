@@ -135,5 +135,5 @@ enum class ArmPosition(val left: Double, val right: Double) {
 
 enum class GrabberPosition(val left: Double, val right: Double) {
     OPEN(0.4, 0.58),
-    CLOSED(0.0, 1.0)
+    CLOSE(0.0, 1.0)
 }

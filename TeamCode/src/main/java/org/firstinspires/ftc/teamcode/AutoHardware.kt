@@ -8,7 +8,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera
 import org.openftc.easyopencv.OpenCvInternalCamera.CameraDirection
 import kotlin.math.abs
 
-const val DEFAULT_SPEED = 0.6
+const val DEFAULT_SPEED = 0.7
 const val DEFAULT_TIMEOUT = 10.0
 
 class AutoHardware(private val linearOpMode: LinearOpMode) :
@@ -61,13 +61,13 @@ class AutoHardware(private val linearOpMode: LinearOpMode) :
     internal fun turnRight(
         ticks: Int,
         speed: Double = DEFAULT_SPEED,
-        timeoutS: Double = DEFAULT_TIMEOUT
+        timeoutS: Double = 1.5
     ) = move(ticks, -ticks, ticks, -ticks, speed, timeoutS, "Right Turn")
 
     internal fun turnLeft(
         ticks: Int,
         speed: Double = DEFAULT_SPEED,
-        timeoutS: Double = DEFAULT_TIMEOUT
+        timeoutS: Double = 1.5
     ) = move(-ticks, ticks, -ticks, ticks, speed, timeoutS, "Left Turn")
 
     internal fun wait(seconds: Double) {
@@ -119,5 +119,5 @@ class AutoHardware(private val linearOpMode: LinearOpMode) :
     ) = move(flTicks, frTicks, blTicks, brTicks, speed, speed, speed, speed, timeoutS, action)
 
     private fun wheelsBusy(): Boolean =
-        wheels.any { abs(it.targetPosition - it.currentPosition) > 50 }
+        wheels.any { abs(it.targetPosition - it.currentPosition) > 60 }
 }

@@ -16,7 +16,7 @@ class Drive : OpMode() {
     private val rightArmUp = ToggleBoolean()
     private val rightGrabberOpen = ToggleBoolean()
 
-    private val clawPos = ToggleDouble(doubleArrayOf(0.3, 0.5))
+    private val clawPos = ToggleDouble(doubleArrayOf(0.9, 1.0))
     private val flickerPos = ToggleDouble(doubleArrayOf(1.0, 0.0))
 
     override fun init() {
@@ -61,13 +61,13 @@ class Drive : OpMode() {
                     if (leftArmUp.output()) ArmPosition.UP else ArmPosition.DOWN
                 )
                 setLeftGrabberPosition(
-                    if (leftGrabberOpen.output()) GrabberPosition.OPEN else GrabberPosition.CLOSED
+                    if (leftGrabberOpen.output()) GrabberPosition.OPEN else GrabberPosition.CLOSE
                 )
                 setRightArmPosition(
                     if (rightArmUp.output()) ArmPosition.UP else ArmPosition.DOWN
                 )
                 setRightGrabberPosition(
-                    if (rightGrabberOpen.output()) GrabberPosition.OPEN else GrabberPosition.CLOSED
+                    if (rightGrabberOpen.output()) GrabberPosition.OPEN else GrabberPosition.CLOSE
                 )
             }
 

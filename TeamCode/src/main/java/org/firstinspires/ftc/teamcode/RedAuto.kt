@@ -15,7 +15,7 @@ class RedAuto : LinearOpMode() {
 
         with(hardware) {
             setClawPosition(0.5)
-            setFlickerPosition(0.5)
+            setFlickerPosition(1.0)
 
             val stonePosition = skystonePosition
             telemetry.addData("Skystones", stonePosition)
@@ -32,7 +32,7 @@ class RedAuto : LinearOpMode() {
                     // get first stone
                     forward(2550)
                     right(600)
-                    setRightGrabberPosition(GrabberPosition.CLOSED)
+                    setRightGrabberPosition(GrabberPosition.CLOSE)
                     forward(200)
                     wait(.25)
                     // move stone
@@ -46,7 +46,7 @@ class RedAuto : LinearOpMode() {
                     backward(5600, 0.7)
                     turnLeft(1550)
                     forward(2000)
-                    setLeftGrabberPosition(GrabberPosition.CLOSED)
+                    setLeftGrabberPosition(GrabberPosition.CLOSE)
                     wait(.5)
                     // move stone
                     backward(1650)
@@ -60,7 +60,7 @@ class RedAuto : LinearOpMode() {
                     // get first stone
                     forward(2750)
                     right(800)
-                    setLeftGrabberPosition(GrabberPosition.CLOSED)
+                    setLeftGrabberPosition(GrabberPosition.CLOSE)
                     wait(.3)
                     // move stone
                     backward(1000)
@@ -73,7 +73,7 @@ class RedAuto : LinearOpMode() {
                     backward(6250)
                     turnLeft(1500)
                     forward(1800)
-                    setLeftGrabberPosition(GrabberPosition.CLOSED)
+                    setLeftGrabberPosition(GrabberPosition.CLOSE)
                     wait(.5)
                     // move stone
                     backward(1650)
@@ -86,7 +86,7 @@ class RedAuto : LinearOpMode() {
                 0 -> {
                     // get first stone
                     forward(2750)
-                    setLeftGrabberPosition(GrabberPosition.CLOSED)
+                    setLeftGrabberPosition(GrabberPosition.CLOSE)
                     wait(.3)
                     // move stone
                     backward(1000)
@@ -100,7 +100,7 @@ class RedAuto : LinearOpMode() {
                     turnLeft(1550)
                     left(500)
                     forward(1500)
-                    setLeftGrabberPosition(GrabberPosition.CLOSED)
+                    setLeftGrabberPosition(GrabberPosition.CLOSE)
                     wait(.5)
                     // move stone
                     backward(1650)
