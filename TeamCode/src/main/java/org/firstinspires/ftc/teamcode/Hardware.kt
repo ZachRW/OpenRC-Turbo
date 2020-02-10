@@ -129,11 +129,11 @@ open class Hardware(hardwareMap: HardwareMap, protected val telemetry: Telemetry
 }
 
 enum class ArmPosition(val left: Double, val right: Double) {
-    UP(0.5, 0.4),
-    DOWN(0.25, 0.65)
+    DOWN(0.25, 0.65),
+    UP(0.5, 0.4)
 }
 
 enum class GrabberPosition(val left: Double, val right: Double) {
-    OPEN(0.4, 0.58),
-    CLOSE(0.0, 1.0)
+    CLOSE(0.0, 1.0),
+    OPEN(0.4, 0.58)
 }

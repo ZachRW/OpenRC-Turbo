@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import edu.spa.ftclib.internal.state.ToggleBoolean
-import edu.spa.ftclib.internal.state.ToggleDouble
 
 @TeleOp
 class Drive : OpMode() {
@@ -11,13 +9,14 @@ class Drive : OpMode() {
 
     private var speed = 1.0
     private val reverse = ToggleBoolean()
-    private val leftArmUp = ToggleBoolean()
-    private val leftGrabberOpen = ToggleBoolean()
-    private val rightArmUp = ToggleBoolean()
-    private val rightGrabberOpen = ToggleBoolean()
 
-    private val clawPos = ToggleDouble(doubleArrayOf(0.9, 1.0))
-    private val flickerPos = ToggleDouble(doubleArrayOf(1.0, 0.0))
+    private val leftArmPos = Toggle(*ArmPosition.values())
+    private val rightArmPos = Toggle(*ArmPosition.values())
+    private val leftGrabberPos = Toggle(*GrabberPosition.values())
+    private val rightGrabberPos = Toggle(*GrabberPosition.values())
+
+    private val clawPos = Toggle(0.9, 1.0)
+    private val flickerPos = Toggle(1.0, 0.0)
 
     override fun init() {
         telemetry.addLine("Initializing...")
@@ -33,10 +32,10 @@ class Drive : OpMode() {
         with(hardware) {
             with(gamepad1) {
                 reverse.input(x)
-                leftArmUp.input(left_bumper)
-                leftGrabberOpen.input(left_trigger > 0)
-                rightArmUp.input(right_bumper)
-                rightGrabberOpen.input(right_trigger > 0)
+                leftArmPos.input(left_bumper)
+                rightArmPos.input(right_bumper)
+                leftGrabberPos.input(left_trigger > 0)
+                rightGrabberPos.input(right_trigger > 0)
 
                 when {
                     dpad_up ->
@@ -57,18 +56,10 @@ class Drive : OpMode() {
                     reverse.output()
                 )
 
-                setLeftArmPosition(
-                    if (leftArmUp.output()) ArmPosition.UP else ArmPosition.DOWN
-                )
-                setLeftGrabberPosition(
-                    if (leftGrabberOpen.output()) GrabberPosition.OPEN else GrabberPosition.CLOSE
-                )
-                setRightArmPosition(
-                    if (rightArmUp.output()) ArmPosition.UP else ArmPosition.DOWN
-                )
-                setRightGrabberPosition(
-                    if (rightGrabberOpen.output()) GrabberPosition.OPEN else GrabberPosition.CLOSE
-                )
+                setLeftArmPosition(leftArmPos.output())
+                setLeftGrabberPosition(leftGrabberPos.output())
+                setRightArmPosition(rightArmPos.output())
+                setRightGrabberPosition(rightGrabberPos.output())
             }
 
             with(gamepad2) {
@@ -96,3 +87,19 @@ class Drive : OpMode() {
         }
     }
 }
+
+open class Toggle<T> constructor(private vararg val states: T) {
+    private var prevPressed = false
+    private var stateIndex = 0
+
+    fun input(pressed: Boolean) {
+        if (pressed && !prevPressed) {
+            stateIndex = (stateIndex + 1) % states.size
+        }
+        prevPressed = pressed
+    }
+
+    fun output() = states[stateIndex]
+}
+
+class ToggleBoolean : Toggle<Boolean>(false, true)
