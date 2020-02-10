@@ -12,12 +12,14 @@
 apply from: '../build.common.gradle'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
+
+apply from: '../moduleFlavors.gradle'
+
 dependencies {
     /*
      * Other Modules
      */
     implementation project(':FtcRobotController')
-    implementation project(':HOMAR-FTC-Library')
     implementation 'com.github.dogecv:dogecv:2020.4-alpha'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.acmerobotics.roadrunner:core:0.4.7'
