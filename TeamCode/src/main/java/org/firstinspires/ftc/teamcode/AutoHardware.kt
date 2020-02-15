@@ -1,21 +1,34 @@
 package org.firstinspires.ftc.teamcode
 
+import com.qualcomm.hardware.bosch.BNO055IMU
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.openftc.easyopencv.OpenCvCameraRotation
 import org.openftc.easyopencv.OpenCvInternalCamera
 import org.openftc.easyopencv.OpenCvInternalCamera.CameraDirection
+import kotlin.math.PI
 import kotlin.math.abs
 
-const val DEFAULT_SPEED = 0.7
+const val DEFAULT_SPEED = 1.0
 const val DEFAULT_TIMEOUT = 10.0
+const val DEFAULT_TURN_TIMEOUT = 1.5
 
 class AutoHardware(private val linearOpMode: LinearOpMode) :
     Hardware(linearOpMode.hardwareMap, linearOpMode.telemetry) {
     private val timer = ElapsedTime()
     private val skystoneDetector = SkystoneDetector(telemetry)
 
+    private var targetHeading = 0.0
+
+    private val heading: Double
+        get() = (leftIMU.angularOrientation.firstAngle
+                + rightIMU.angularOrientation.firstAngle) / 2 * 180 / PI
+
+    private val angularVelocity: Double
+        get() = (leftIMU.angularVelocity.zRotationRate
+                + rightIMU.angularVelocity.zRotationRate) / 2 * 180 / PI
 
     internal val skystonePosition: Int
         get() = skystoneDetector.skystonePosition()
@@ -32,43 +45,131 @@ class AutoHardware(private val linearOpMode: LinearOpMode) :
         }
     }
 
-    // Back is treated as front for autonomous movement
+    internal fun initGyros() {
+        telemetry.addLine("Calibrating Gyros...")
+        telemetry.update()
 
-    internal fun backward(
-        ticks: Int,
-        speed: Double = DEFAULT_SPEED,
-        timeoutS: Double = DEFAULT_TIMEOUT
-    ) = move(ticks, ticks, ticks, ticks, speed, timeoutS, "Backward")
+        leftIMU.initialize(BNO055IMU.Parameters().apply {
+            angleUnit = BNO055IMU.AngleUnit.RADIANS
+            accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC
+            loggingEnabled = true
+            loggingTag = "Left IMU"
+            accelerationIntegrationAlgorithm = JustLoggingAccelerationIntegrator()
+        })
+
+        rightIMU.initialize(BNO055IMU.Parameters().apply {
+            angleUnit = BNO055IMU.AngleUnit.RADIANS
+            accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC
+            loggingEnabled = true
+            loggingTag = "Right IMU"
+            accelerationIntegrationAlgorithm = JustLoggingAccelerationIntegrator()
+        })
+
+        while ((!leftIMU.isGyroCalibrated || !rightIMU.isGyroCalibrated)
+            && linearOpMode.opModeIsActive()
+        ) {
+            telemetry.addLine("Calibrating Gyros")
+            telemetry.update()
+        }
+    }
+
+    // Back is treated as front for autonomous movement
 
     internal fun forward(
         ticks: Int,
         speed: Double = DEFAULT_SPEED,
         timeoutS: Double = DEFAULT_TIMEOUT
-    ) = move(-ticks, -ticks, -ticks, -ticks, speed, timeoutS, "Forward")
+    ) = move(FORWARD, ticks, speed, timeoutS, "Forward")
+
+    internal fun backward(
+        ticks: Int,
+        speed: Double = DEFAULT_SPEED,
+        timeoutS: Double = DEFAULT_TIMEOUT
+    ) = move(BACKWARD, ticks, speed, timeoutS, "Backward")
 
     internal fun left(
         ticks: Int,
         speed: Double = DEFAULT_SPEED,
         timeoutS: Double = DEFAULT_TIMEOUT
-    ) = move(-ticks, ticks, ticks, -ticks, speed, timeoutS, "Left")
+    ) = move(LEFT, ticks, speed, timeoutS, "Left")
 
     internal fun right(
         ticks: Int,
         speed: Double = DEFAULT_SPEED,
         timeoutS: Double = DEFAULT_TIMEOUT
-    ) = move(ticks, -ticks, -ticks, ticks, speed, timeoutS, "Right")
+    ) = move(RIGHT, ticks, speed, timeoutS, "Right")
 
     internal fun turnRight(
         ticks: Int,
         speed: Double = DEFAULT_SPEED,
-        timeoutS: Double = 1.5
-    ) = move(ticks, -ticks, ticks, -ticks, speed, timeoutS, "Right Turn")
+        timeoutS: Double = DEFAULT_TURN_TIMEOUT
+    ) = move(TURN_RIGHT, ticks, speed, timeoutS, "Right Turn")
 
     internal fun turnLeft(
         ticks: Int,
         speed: Double = DEFAULT_SPEED,
-        timeoutS: Double = 1.5
-    ) = move(-ticks, ticks, -ticks, ticks, speed, timeoutS, "Left Turn")
+        timeoutS: Double = DEFAULT_TURN_TIMEOUT
+    ) = move(TURN_LEFT, ticks, speed, timeoutS, "Left Turn")
+
+    internal fun turnToTarget(target: Double = targetHeading) {
+        targetHeading = target
+
+        setMotorPower(1.0, if (heading < target) TURN_LEFT else TURN_RIGHT)
+
+        wheels.forEach { it.mode = RunMode.RUN_USING_ENCODER }
+        while ((abs(heading - target) > 5 || abs(angularVelocity) > 0)
+            && linearOpMode.opModeIsActive()
+        ) {
+            val distance = heading - target
+
+            val direction =
+                if (distance < 0) TURN_LEFT else TURN_RIGHT
+            val speed = if (abs(distance) > 60) {
+                1.0
+            } else {
+                abs(distance) / 40
+            }
+
+            setMotorPower(speed, direction)
+
+            telemetry.addData("Heading", heading)
+            telemetry.addData("Target", targetHeading)
+            telemetry.addData("Velocity", angularVelocity)
+            telemetry.update()
+        }
+    }
+
+    internal fun turnDrop() {
+        targetHeading = -90.0
+
+        setMotorPower(1.0, if (heading < targetHeading) TURN_LEFT else TURN_RIGHT)
+
+        wheels.forEach { it.mode = RunMode.RUN_USING_ENCODER }
+        while ((abs(heading - targetHeading) > 5 || abs(angularVelocity) > 0)
+            && linearOpMode.opModeIsActive()
+        ) {
+            val distance = heading - targetHeading
+
+            if (abs(heading - 45) < 10) {
+                setRightGrabberPosition(GrabberPosition.OPEN)
+            }
+
+            val direction =
+                if (distance < 0) TURN_LEFT else TURN_RIGHT
+            val speed = if (abs(distance) > 60) {
+                1.0
+            } else {
+                abs(distance) / 40
+            }
+
+            setMotorPower(speed, direction)
+
+            telemetry.addData("Heading", heading)
+            telemetry.addData("Target", targetHeading)
+            telemetry.addData("Velocity", angularVelocity)
+            telemetry.update()
+        }
+    }
 
     internal fun wait(seconds: Double) {
         timer.reset()
@@ -77,24 +178,27 @@ class AutoHardware(private val linearOpMode: LinearOpMode) :
         }
     }
 
+    private fun setMotorPower(speed: Double, direction: Direction) {
+        wheels.zip(direction).forEach { (wheel, wheelDirection) ->
+            wheel.power = speed * wheelDirection
+        }
+    }
+
     private fun move(
-        flTicks: Int, frTicks: Int, blTicks: Int, brTicks: Int,
-        flSpeed: Double, frSpeed: Double, blSpeed: Double, brSpeed: Double,
-        timeoutS: Double, action: String
+        direction: Direction,
+        ticks: Int,
+        speed: Double,
+        timeoutS: Double,
+        action: String
     ) {
-        wheels.forEach { it.mode = RunMode.STOP_AND_RESET_ENCODER }
+        wheels.zip(direction).forEach { (wheel, wheelDirection) ->
+            wheel.mode = RunMode.STOP_AND_RESET_ENCODER
 
-        frontLeft.targetPosition = flTicks
-        frontRight.targetPosition = frTicks
-        backLeft.targetPosition = blTicks
-        backRight.targetPosition = brTicks
+            wheel.targetPosition = (ticks * wheelDirection).toInt()
+            wheel.power = abs(speed * wheelDirection)
 
-        frontLeft.power = flSpeed
-        frontRight.power = frSpeed
-        backLeft.power = blSpeed
-        backRight.power = brSpeed
-
-        wheels.forEach { it.mode = RunMode.RUN_TO_POSITION }
+            wheel.mode = RunMode.RUN_TO_POSITION
+        }
 
         timer.reset()
         while (wheelsBusy() && timer.seconds() < timeoutS && linearOpMode.opModeIsActive()) {
@@ -113,11 +217,16 @@ class AutoHardware(private val linearOpMode: LinearOpMode) :
         }
     }
 
-    private fun move(
-        flTicks: Int, frTicks: Int, blTicks: Int, brTicks: Int,
-        speed: Double, timeoutS: Double, action: String
-    ) = move(flTicks, frTicks, blTicks, brTicks, speed, speed, speed, speed, timeoutS, action)
-
     private fun wheelsBusy(): Boolean =
         wheels.any { abs(it.targetPosition - it.currentPosition) > 60 }
 }
+
+private class Direction(fl: Double, fr: Double, bl: Double, br: Double) :
+    List<Double> by listOf(fl, fr, bl, br)
+
+private val FORWARD = Direction(-1.0, -1.0, -1.0, -1.0)
+private val BACKWARD = Direction(1.0, 1.0, 1.0, 1.0)
+private val LEFT = Direction(-1.0, 1.0, 1.0, -1.0)
+private val RIGHT = Direction(1.0, -1.0, -1.0, 1.0)
+private val TURN_LEFT = Direction(-1.0, 1.0, -1.0, 1.0)
+private val TURN_RIGHT = Direction(1.0, -1.0, 1.0, -1.0)

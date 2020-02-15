@@ -6,7 +6,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 @Autonomous
 class BlueAuto : LinearOpMode() {
     override fun runOpMode() {
-        val hardware = AutoHardware(this).apply { initSkystoneDetector() }
+        val hardware = AutoHardware(this).apply {
+            initSkystoneDetector()
+            initGyros()
+        }
 
         telemetry.addLine("Initialization Finished")
         telemetry.update()
@@ -31,35 +34,31 @@ class BlueAuto : LinearOpMode() {
             when (stonePosition) {
                 0, -1 -> {
                     // get first stone
-                    forward(2600)
-                    left(1000)
+                    forward(2400)
+                    left(1200)
+                    forward(450)
                     setRightGrabberPosition(GrabberPosition.CLOSE)
-                    wait(.5)
+                    wait(0.5)
+                    setRightArmPosition(ArmPosition.UP)
+                    // move stone
+                    backward(500)
+                    turnToTarget(90.0)
+                    forward(6000, 1.0)
+                    turnDrop()
+
+                    // get second stone
+                    setRightArmPosition(ArmPosition.DOWN)
+                    forward(8800, 1.0, 5.0)
+                    turnToTarget(0.0)
+                    forward(1100)
+                    setRightGrabberPosition(GrabberPosition.CLOSE)
+                    wait(0.5)
                     setRightArmPosition(ArmPosition.UP)
                     // move stone
                     backward(1000)
-                    turnLeft(1500)
-                    forward(6000, 1.0)
-                    turnRight(1400)
-                    forward(1200)
-                    setRightGrabberPosition(GrabberPosition.OPEN)
-                    wait(.5)
-
-                    // get second stone
-                    backward(800)
-                    setRightArmPosition(ArmPosition.DOWN)
-                    turnRight(1400)
-                    forward(10000, 1.0, 5.0)
-                    turnLeft(1600)
-                    forward(1100)
-                    setRightGrabberPosition(GrabberPosition.CLOSE)
-                    wait(.5)
-                    setRightArmPosition(ArmPosition.UP)
-                    // move stone
-                    backward(1400)
-                    turnLeft(1400)
-                    forward(7000, 1.0)
-                    turnRight(1400)
+                    turnToTarget(90.0)
+                    forward(8000, 1.0)
+                    turnToTarget(0.0)
                     setRightArmPosition(ArmPosition.UP)
                     forward(1500)
 

@@ -53,7 +53,7 @@ open class Hardware(hardwareMap: HardwareMap, protected val telemetry: Telemetry
             rightIMU = get(BNO055IMUImpl::class.java, "r imu")
         }
 
-        wheels = arrayOf(frontLeft, backLeft, frontRight, backRight)
+        wheels = arrayOf(frontLeft, frontRight, backLeft, backRight)
         wheelLabels = arrayOf("FL", "FR", "BL", "BR")
 
         frontLeft.direction = Direction.REVERSE
