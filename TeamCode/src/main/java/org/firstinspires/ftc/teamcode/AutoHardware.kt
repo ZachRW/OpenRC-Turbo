@@ -117,7 +117,7 @@ class AutoHardware(private val linearOpMode: LinearOpMode) :
         setMotorPower(1.0, if (heading < target) TURN_LEFT else TURN_RIGHT)
 
         wheels.forEach { it.mode = RunMode.RUN_USING_ENCODER }
-        while ((abs(heading - target) > 5 || abs(angularVelocity) > 0)
+        while ((abs(heading - target) > 2 || abs(angularVelocity) > 0)
             && linearOpMode.opModeIsActive()
         ) {
             val distance = heading - target
@@ -127,7 +127,7 @@ class AutoHardware(private val linearOpMode: LinearOpMode) :
             val speed = if (abs(distance) > 60) {
                 1.0
             } else {
-                abs(distance) / 40
+                (abs(distance) / 40).coerceAtLeast(0.1)
             }
 
             setMotorPower(speed, direction)
@@ -226,7 +226,7 @@ private class Direction(fl: Double, fr: Double, bl: Double, br: Double) :
 
 private val FORWARD = Direction(-1.0, -1.0, -1.0, -1.0)
 private val BACKWARD = Direction(1.0, 1.0, 1.0, 1.0)
-private val LEFT = Direction(-1.0, 1.0, 1.0, -1.0)
-private val RIGHT = Direction(1.0, -1.0, -1.0, 1.0)
+private val LEFT = Direction(1.0, -1.0, -1.0, 1.0)
+private val RIGHT = Direction(-1.0, 1.0, 1.0, -1.0)
 private val TURN_LEFT = Direction(-1.0, 1.0, -1.0, 1.0)
 private val TURN_RIGHT = Direction(1.0, -1.0, 1.0, -1.0)
