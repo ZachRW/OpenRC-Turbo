@@ -20,64 +20,74 @@ class BlueAuto : LinearOpMode() {
             setClawPosition(0.5)
             setFlickerPosition(1.0)
 
+            setLeftArmPosition(ArmPosition.DOWN)
+            setRightArmPosition(ArmPosition.DOWN)
+            setLeftGrabberPosition(GrabberPosition.OPEN)
+            setRightGrabberPosition(GrabberPosition.OPEN)
+            wait(0.5)
+
             val stonePosition = skystonePosition
             telemetry.addData("Skystones", stonePosition)
             telemetry.update()
-
-            setLeftArmPosition(ArmPosition.DOWN)
-            setRightArmPosition(ArmPosition.DOWN)
-            wait(1.5)
-
-            setLeftGrabberPosition(GrabberPosition.OPEN)
-            setRightGrabberPosition(GrabberPosition.OPEN)
 
             when (stonePosition) {
                 0, -1 -> {
                     // get first stone
                     forward(2400)
-                    left(1200)
-                    forward(450)
+                    left(800)
                     setRightGrabberPosition(GrabberPosition.CLOSE)
                     wait(0.5)
                     setRightArmPosition(ArmPosition.UP)
                     // move stone
-                    backward(500)
-                    turnToTarget(90.0)
-                    forward(6000, 1.0)
-                    setLeftArmPosition(0.8)
-                    turnDrop()
+                    backward(1200)
+                    setLeftGrabberPosition(GrabberPosition.CLOSE)
+                    left(7500)
+                    setLeftArmPosition(ArmPosition.UP)
+                    forward(1300)
+                    setRightGrabberPosition(GrabberPosition.OPEN)
 
                     // get second stone
+                    backward(1000)
                     setLeftArmPosition(ArmPosition.DOWN)
                     setRightArmPosition(ArmPosition.DOWN)
-                    forward(8800, 1.0, 5.0)
+                    setRightGrabberPosition(GrabberPosition.CLOSE)
                     turnToTarget(0.0)
-                    forward(1600)
+                    rightAndServos(9800)
+                    setLeftGrabberPosition(GrabberPosition.OPEN)
+                    setRightGrabberPosition(GrabberPosition.OPEN)
+                    forward(1500)
                     setRightGrabberPosition(GrabberPosition.CLOSE)
                     wait(0.5)
                     setRightArmPosition(ArmPosition.UP)
                     // move stone
-                    backward(1000)
-                    turnToTarget(90.0)
-                    forward(9000, 1.0)
-                    turnToTarget(0.0)
+                    backward(1700)
+                    setLeftGrabberPosition(GrabberPosition.CLOSE)
+                    left(9000)
+                    setLeftArmPosition(0.4)
                     setRightArmPosition(ArmPosition.UP)
                     forward(1500)
-
-                    //move build plate
                     setLeftGrabberPosition(GrabberPosition.OPEN)
                     setRightGrabberPosition(GrabberPosition.OPEN)
+                    wait(0.3)
+
+                    // move build plate
                     setLeftArmPosition(ArmPosition.DOWN)
                     setRightArmPosition(ArmPosition.DOWN)
                     wait(0.5)
-
-                    backward(2500, .75)
-                    right(4000, 1.0, 3.0)
-                    left(1000, .5, 1.0)
-                    forward(2500, 1.0)
+                    backward(3600, timeoutS = 3.0)
                     setLeftArmPosition(ArmPosition.UP)
                     setRightArmPosition(ArmPosition.UP)
-                    backward(2000, 1.0)
+                    right(3800)
+                    setLeftArmPosition(ArmPosition.DOWN)
+                    setRightArmPosition(ArmPosition.DOWN)
+                    setLeftGrabberPosition(GrabberPosition.CLOSE)
+                    setRightGrabberPosition(GrabberPosition.CLOSE)
+                    forward(1000)
+                    left(1500, timeoutS = 2.0)
+
+                    // park
+                    forward(1000)
+                    right(2500)
                 }
 
                 1 -> {

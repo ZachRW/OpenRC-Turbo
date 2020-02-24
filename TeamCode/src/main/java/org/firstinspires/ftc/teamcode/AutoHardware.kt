@@ -127,7 +127,7 @@ class AutoHardware(private val linearOpMode: LinearOpMode) :
             val speed = if (abs(distance) > 60) {
                 1.0
             } else {
-                (abs(distance) / 40).coerceAtLeast(0.1)
+                (abs(distance) / 40).coerceAtLeast(0.07)
             }
 
             setMotorPower(speed, direction)
@@ -139,37 +139,50 @@ class AutoHardware(private val linearOpMode: LinearOpMode) :
         }
     }
 
-    internal fun turnDrop() {
-        targetHeading = -90.0
+    internal fun rightAndServos(ticks: Int) {
+        val direction = RIGHT
+        val speed = 1.0
+        val timeoutS = 10.0
+        val action = "Right and Servos"
 
-        setMotorPower(1.0, if (heading < targetHeading) TURN_LEFT else TURN_RIGHT)
+        wheels.zip(direction).forEach { (wheel, wheelDirection) ->
+            wheel.mode = RunMode.STOP_AND_RESET_ENCODER
 
-        wheels.forEach { it.mode = RunMode.RUN_USING_ENCODER }
-        while ((abs(heading - targetHeading) > 5 || abs(angularVelocity) > 0)
-            && linearOpMode.opModeIsActive()
-        ) {
-            val distance = heading - targetHeading
+            wheel.targetPosition = (ticks * wheelDirection).toInt()
+            wheel.power = abs(speed * wheelDirection)
 
-            if (abs(heading - 45) < 10) {
-                setRightGrabberPosition(GrabberPosition.OPEN)
+            wheel.mode = RunMode.RUN_TO_POSITION
+        }
+
+        timer.reset()
+        while (wheelsBusy() && timer.seconds() < timeoutS && linearOpMode.opModeIsActive()) {
+            telemetry.addLine(action + "\n")
+            telemetry.addData("Motor", "Position |  Target  | Distance")
+            for ((index, wheel) in wheels.withIndex()) {
+                telemetry.addData(
+                    wheelLabels[index],
+                    "%8d | %8d | %8d",
+                    wheel.currentPosition,
+                    wheel.targetPosition,
+                    wheel.targetPosition - wheel.currentPosition
+                )
+
+                if (wheel.currentPosition > 6500) {
+                    setLeftGrabberPosition(GrabberPosition.OPEN)
+                    setRightGrabberPosition(GrabberPosition.OPEN)
+                }
             }
-
-            val direction =
-                if (distance < 0) TURN_LEFT else TURN_RIGHT
-            val speed = if (abs(distance) > 60) {
-                1.0
-            } else {
-                abs(distance) / 40
-            }
-
-            setMotorPower(speed, direction)
-
-            telemetry.addData("Heading", heading)
-            telemetry.addData("Target", targetHeading)
-            telemetry.addData("Velocity", angularVelocity)
             telemetry.update()
         }
     }
+
+    internal fun backAndTurnLeft(ticks: Int) = move(
+        BACK_AND_TURN_LEFT,
+        ticks,
+        0.7,
+        10.0,
+        "Back and Turn Left"
+    )
 
     internal fun wait(seconds: Double) {
         timer.reset()
@@ -230,3 +243,4 @@ private val LEFT = Direction(1.0, -1.0, -1.0, 1.0)
 private val RIGHT = Direction(-1.0, 1.0, 1.0, -1.0)
 private val TURN_LEFT = Direction(-1.0, 1.0, -1.0, 1.0)
 private val TURN_RIGHT = Direction(1.0, -1.0, 1.0, -1.0)
+private val BACK_AND_TURN_LEFT = Direction(0.0, 1.0, 0.0, 1.0)
