@@ -127,7 +127,7 @@ class AutoHardware(private val linearOpMode: LinearOpMode) :
             val speed = if (abs(distance) > 60) {
                 1.0
             } else {
-                (abs(distance) / 40).coerceAtLeast(0.07)
+                (abs(distance) / 40).coerceAtLeast(0.0)
             }
 
             setMotorPower(speed, direction)
