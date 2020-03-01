@@ -34,7 +34,7 @@ class BlueAuto : LinearOpMode() {
                 // pattern A
                 0, -1 -> {
                     // get first stone
-                    forward(2400)
+                    forward(2300)
                     left(800)
                     setRightGrabberPosition(GrabberPosition.CLOSE)
                     wait(0.5)
@@ -162,7 +162,7 @@ class BlueAuto : LinearOpMode() {
                 // pattern C
                 2 -> {
                     // get first stone
-                    forward(2400)
+                    forward(2300)
                     right(1100)
                     setRightGrabberPosition(GrabberPosition.CLOSE)
                     wait(0.5)

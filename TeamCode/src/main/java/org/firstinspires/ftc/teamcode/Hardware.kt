@@ -134,7 +134,7 @@ open class Hardware(hardwareMap: HardwareMap, protected val telemetry: Telemetry
 
 enum class ArmPosition(val left: Double, val right: Double) {
     DOWN(0.25, 0.65),
-    LOW_UP(0.3, 0.6),
+    LOW_UP(0.4, 0.4),
     UP(0.5, 0.4)
 }
 
