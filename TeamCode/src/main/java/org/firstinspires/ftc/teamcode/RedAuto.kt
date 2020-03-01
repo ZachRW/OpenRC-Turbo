@@ -6,7 +6,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 @Autonomous
 class RedAuto : LinearOpMode() {
     override fun runOpMode() {
-        val hardware = AutoHardware(this).apply { initSkystoneDetector() }
+        val hardware = AutoHardware(this).apply {
+            initSkystoneDetector()
+            initGyros()
+        }
 
         telemetry.addLine("Initialization Finished")
         telemetry.update()
@@ -15,100 +18,194 @@ class RedAuto : LinearOpMode() {
 
         with(hardware) {
             setClawPosition(0.5)
-            setFlickerPosition(1.0)
+            setFlickerPosition(0.6)
+
+            setLeftArmPosition(ArmPosition.DOWN)
+            setRightArmPosition(ArmPosition.DOWN)
+            setLeftGrabberPosition(GrabberPosition.OPEN)
+            setRightGrabberPosition(GrabberPosition.OPEN)
+            wait(0.5)
 
             val stonePosition = skystonePosition
             telemetry.addData("Skystones", stonePosition)
             telemetry.update()
 
-            setLeftArmPosition(ArmPosition.DOWN)
-            setRightArmPosition(ArmPosition.DOWN)
-            wait(1.5)
-
-            setRightGrabberPosition(GrabberPosition.OPEN)
-
             when (stonePosition) {
+                // pattern A
                 2, -1 -> {
                     // get first stone
                     forward(2550)
-                    right(600)
-                    setRightGrabberPosition(GrabberPosition.CLOSE)
-                    forward(200)
-                    wait(.25)
-                    // move stone
-                    backward(1700)
-                    turnRight(1650, timeoutS = 1.5)
-                    forward(4300, 0.7, timeoutS = 5.0)
-                    setRightGrabberPosition(GrabberPosition.OPEN)
-                    wait(.5)
-
-                    // get second stone
-                    backward(5600, 0.7)
-                    turnLeft(1550)
-                    forward(2000)
-                    setLeftGrabberPosition(GrabberPosition.CLOSE)
-                    wait(.5)
-                    // move stone
-                    backward(1650)
-                    turnRight(1600, timeoutS = 1.5)
-                    forward(5600, 0.9)
-                    setLeftGrabberPosition(GrabberPosition.OPEN)
-                    backward(1000)
-                }
-
-                1 -> {
-                    // get first stone
-                    forward(2750)
                     right(800)
-                    setLeftGrabberPosition(GrabberPosition.CLOSE)
-                    wait(.3)
+                    setRightGrabberPosition(GrabberPosition.CLOSE)
+                    wait(0.5)
+                    setRightArmPosition(ArmPosition.UP)
                     // move stone
-                    backward(1000)
-                    turnRight(1650, timeoutS = 1.5)
-                    forward(4300, 0.9)
-                    setLeftGrabberPosition(GrabberPosition.OPEN)
-                    wait(.2)
+                    backward(900)
+                    setLeftGrabberPosition(GrabberPosition.CLOSE)
+                    right(5500)
+                    forward(1200)
+                    setLeftArmPosition(ArmPosition.UP)
+                    right(2000)
+                    setRightGrabberPosition(GrabberPosition.OPEN)
+                    wait(0.5)
 
                     // get second stone
-                    backward(6250)
-                    turnLeft(1500)
-                    forward(1800)
-                    setLeftGrabberPosition(GrabberPosition.CLOSE)
-                    wait(.5)
-                    // move stone
-                    backward(1650)
-                    turnRight(1600, timeoutS = 1.5)
-                    forward(6400, 0.9)
-                    setLeftGrabberPosition(GrabberPosition.OPEN)
+                    left(2000)
                     backward(1200)
+                    setLeftArmPosition(ArmPosition.DOWN)
+                    setRightArmPosition(ArmPosition.DOWN)
+                    setRightGrabberPosition(GrabberPosition.CLOSE)
+                    turnToTarget(0.0)
+                    leftAndServos(6600)
+                    forward(900)
+                    setLeftGrabberPosition(GrabberPosition.CLOSE)
+                    wait(0.5)
+                    setRightArmPosition(ArmPosition.UP)
+                    // move stone
+                    backward(1100)
+                    setLeftGrabberPosition(GrabberPosition.CLOSE)
+                    right(6600)
+                    forward(1200)
+                    setLeftArmPosition(ArmPosition.UP)
+                    right(2000)
+                    setRightGrabberPosition(GrabberPosition.OPEN)
+                    wait(0.5)
+
+                    // move build plate
+                    setLeftArmPosition(ArmPosition.DOWN)
+                    setRightArmPosition(ArmPosition.DOWN)
+                    wait(0.5)
+                    backward(3300, timeoutS = 3.0)
+                    setLeftArmPosition(ArmPosition.UP)
+                    setRightArmPosition(ArmPosition.UP)
+                    left(3200)
+                    setLeftArmPosition(ArmPosition.DOWN)
+                    setRightArmPosition(ArmPosition.DOWN)
+                    setLeftGrabberPosition(GrabberPosition.CLOSE)
+                    setRightGrabberPosition(GrabberPosition.CLOSE)
+                    forward(1000)
+                    right(1500, timeoutS = 2.0)
+
+                    // park
+                    forward(700)
+                    left(2500)
                 }
 
-                0 -> {
-                    // get first stone
-                    forward(2750)
+                // pattern B
+                1 -> {
+                    forward(2550)
                     setLeftGrabberPosition(GrabberPosition.CLOSE)
-                    wait(.3)
+                    wait(0.5)
+                    setLeftArmPosition(ArmPosition.UP)
                     // move stone
-                    backward(1000)
-                    turnRight(1650, timeoutS = 1.5)
-                    forward(5200, 0.9)
+                    backward(900)
+                    setRightGrabberPosition(GrabberPosition.CLOSE)
+                    right(6300)
+                    forward(1200)
+                    setRightArmPosition(ArmPosition.UP)
+                    right(2000)
                     setLeftGrabberPosition(GrabberPosition.OPEN)
-                    wait(.2)
+                    wait(0.5)
 
                     // get second stone
-                    backward(6700)
-                    turnLeft(1550)
-                    left(500)
-                    forward(1500)
-                    setLeftGrabberPosition(GrabberPosition.CLOSE)
-                    wait(.5)
-                    // move stone
-                    backward(1650)
-                    right(500)
-                    turnRight(1700, timeoutS = 1.5)
-                    forward(6600, 0.9)
-                    setLeftGrabberPosition(GrabberPosition.OPEN)
+                    left(2000)
                     backward(1200)
+                    setLeftArmPosition(ArmPosition.DOWN)
+                    setRightArmPosition(ArmPosition.DOWN)
+                    setRightGrabberPosition(GrabberPosition.CLOSE)
+                    turnToTarget(0.0)
+                    leftAndServos(7300)
+                    forward(900)
+                    setLeftGrabberPosition(GrabberPosition.CLOSE)
+                    wait(0.5)
+                    setRightArmPosition(ArmPosition.UP)
+                    // move stone
+                    backward(1100)
+                    setLeftGrabberPosition(GrabberPosition.CLOSE)
+                    right(7300)
+                    forward(1200)
+                    setLeftArmPosition(ArmPosition.UP)
+                    right(2000)
+                    setRightGrabberPosition(GrabberPosition.OPEN)
+                    wait(0.5)
+
+                    // move build plate
+                    setLeftArmPosition(ArmPosition.DOWN)
+                    setRightArmPosition(ArmPosition.DOWN)
+                    wait(0.5)
+                    backward(3300, timeoutS = 3.0)
+                    setLeftArmPosition(ArmPosition.UP)
+                    setRightArmPosition(ArmPosition.UP)
+                    left(3200)
+                    setLeftArmPosition(ArmPosition.DOWN)
+                    setRightArmPosition(ArmPosition.DOWN)
+                    setLeftGrabberPosition(GrabberPosition.CLOSE)
+                    setRightGrabberPosition(GrabberPosition.CLOSE)
+                    forward(1000)
+                    right(1500, timeoutS = 2.0)
+
+                    // park
+                    forward(700)
+                    left(2500)
+                }
+
+                // pattern C
+                0 -> {
+                    forward(2550)
+                    left(1000)
+                    setLeftGrabberPosition(GrabberPosition.CLOSE)
+                    wait(0.5)
+                    setLeftArmPosition(ArmPosition.UP)
+                    // move stone
+                    backward(900)
+                    setRightGrabberPosition(GrabberPosition.CLOSE)
+                    right(7300)
+                    forward(1200)
+                    setRightArmPosition(ArmPosition.UP)
+                    right(2000)
+                    setLeftGrabberPosition(GrabberPosition.OPEN)
+                    wait(0.5)
+
+                    // get second stone
+                    left(2000)
+                    backward(1200)
+                    setLeftArmPosition(ArmPosition.DOWN)
+                    setRightArmPosition(ArmPosition.DOWN)
+                    setRightGrabberPosition(GrabberPosition.CLOSE)
+                    turnToTarget(0.0)
+                    leftAndServos(8300)
+                    forward(900)
+                    setLeftGrabberPosition(GrabberPosition.CLOSE)
+                    wait(0.5)
+                    setRightArmPosition(ArmPosition.UP)
+                    // move stone
+                    backward(1100)
+                    setLeftGrabberPosition(GrabberPosition.CLOSE)
+                    right(8300)
+                    forward(1200)
+                    setLeftArmPosition(ArmPosition.UP)
+                    right(2000)
+                    setRightGrabberPosition(GrabberPosition.OPEN)
+                    wait(0.5)
+
+                    // move build plate
+                    setLeftArmPosition(ArmPosition.DOWN)
+                    setRightArmPosition(ArmPosition.DOWN)
+                    wait(0.5)
+                    backward(3300, timeoutS = 3.0)
+                    setLeftArmPosition(ArmPosition.UP)
+                    setRightArmPosition(ArmPosition.UP)
+                    left(3200)
+                    setLeftArmPosition(ArmPosition.DOWN)
+                    setRightArmPosition(ArmPosition.DOWN)
+                    setLeftGrabberPosition(GrabberPosition.CLOSE)
+                    setRightGrabberPosition(GrabberPosition.CLOSE)
+                    forward(1000)
+                    right(1500, timeoutS = 2.0)
+
+                    // park
+                    forward(700)
+                    left(2500)
                 }
             }
         }

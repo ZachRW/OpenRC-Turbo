@@ -139,6 +139,43 @@ class AutoHardware(private val linearOpMode: LinearOpMode) :
         }
     }
 
+    internal fun leftAndServos(ticks: Int) {
+        val direction = LEFT
+        val speed = 1.0
+        val timeoutS = 10.0
+        val action = "Left and Servos"
+
+        wheels.zip(direction).forEach { (wheel, wheelDirection) ->
+            wheel.mode = RunMode.STOP_AND_RESET_ENCODER
+
+            wheel.targetPosition = (ticks * wheelDirection).toInt()
+            wheel.power = abs(speed * wheelDirection)
+
+            wheel.mode = RunMode.RUN_TO_POSITION
+        }
+
+        timer.reset()
+        while (wheelsBusy() && timer.seconds() < timeoutS && linearOpMode.opModeIsActive()) {
+            telemetry.addLine(action + "\n")
+            telemetry.addData("Motor", "Position |  Target  | Distance")
+            for ((index, wheel) in wheels.withIndex()) {
+                telemetry.addData(
+                    wheelLabels[index],
+                    "%8d | %8d | %8d",
+                    wheel.currentPosition,
+                    wheel.targetPosition,
+                    wheel.targetPosition - wheel.currentPosition
+                )
+
+                if (wheel.currentPosition > 3000) {
+                    setLeftGrabberPosition(GrabberPosition.OPEN)
+                    setRightGrabberPosition(GrabberPosition.OPEN)
+                }
+            }
+            telemetry.update()
+        }
+    }
+
     internal fun rightAndServos(ticks: Int) {
         val direction = RIGHT
         val speed = 1.0
@@ -167,7 +204,7 @@ class AutoHardware(private val linearOpMode: LinearOpMode) :
                     wheel.targetPosition - wheel.currentPosition
                 )
 
-                if (wheel.currentPosition > 6500) {
+                if (wheel.currentPosition > 3000) {
                     setLeftGrabberPosition(GrabberPosition.OPEN)
                     setRightGrabberPosition(GrabberPosition.OPEN)
                 }

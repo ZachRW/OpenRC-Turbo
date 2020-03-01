@@ -18,7 +18,7 @@ class BlueAuto : LinearOpMode() {
 
         with(hardware) {
             setClawPosition(0.5)
-            setFlickerPosition(1.0)
+            setFlickerPosition(0.6)
 
             setLeftArmPosition(ArmPosition.DOWN)
             setRightArmPosition(ArmPosition.DOWN)
@@ -31,6 +31,7 @@ class BlueAuto : LinearOpMode() {
             telemetry.update()
 
             when (stonePosition) {
+                // pattern A
                 0, -1 -> {
                     // get first stone
                     forward(2400)
@@ -41,34 +42,37 @@ class BlueAuto : LinearOpMode() {
                     // move stone
                     backward(1200)
                     setLeftGrabberPosition(GrabberPosition.CLOSE)
-                    left(7400)
+                    left(4000)
                     setLeftArmPosition(ArmPosition.UP)
-                    forward(1300)
+                    forward(1000)
+                    left(3400)
                     setRightGrabberPosition(GrabberPosition.OPEN)
 
                     // get second stone
+                    right(3200)
                     backward(1000)
                     setLeftArmPosition(ArmPosition.DOWN)
                     setRightArmPosition(ArmPosition.DOWN)
                     setRightGrabberPosition(GrabberPosition.CLOSE)
                     turnToTarget(0.0)
-                    rightAndServos(9700)
+                    rightAndServos(6300)
                     setLeftGrabberPosition(GrabberPosition.OPEN)
                     setRightGrabberPosition(GrabberPosition.OPEN)
-                    forward(1400)
+                    forward(1200)
                     setRightGrabberPosition(GrabberPosition.CLOSE)
                     wait(0.5)
                     setRightArmPosition(ArmPosition.UP)
                     // move stone
-                    backward(1800)
+                    backward(1600)
                     setLeftGrabberPosition(GrabberPosition.CLOSE)
-                    left(9000)
+                    left(6200)
                     setLeftArmPosition(0.4)
                     setRightArmPosition(ArmPosition.UP)
-                    forward(1400)
+                    forward(700)
+                    left(3400)
                     setLeftGrabberPosition(GrabberPosition.OPEN)
                     setRightGrabberPosition(GrabberPosition.OPEN)
-                    wait(0.3)
+                    forward(300)
 
                     // move build plate
                     setLeftArmPosition(ArmPosition.DOWN)
@@ -77,7 +81,7 @@ class BlueAuto : LinearOpMode() {
                     backward(3300, timeoutS = 3.0)
                     setLeftArmPosition(ArmPosition.UP)
                     setRightArmPosition(ArmPosition.UP)
-                    right(3000)
+                    right(3200)
                     setLeftArmPosition(ArmPosition.DOWN)
                     setRightArmPosition(ArmPosition.DOWN)
                     setLeftGrabberPosition(GrabberPosition.CLOSE)
@@ -90,6 +94,7 @@ class BlueAuto : LinearOpMode() {
                     right(2500)
                 }
 
+                // pattern B
                 1 -> {
                     // get first stone
                     forward(2750)
@@ -99,43 +104,46 @@ class BlueAuto : LinearOpMode() {
                     // move stone
                     backward(1200)
                     setLeftGrabberPosition(GrabberPosition.CLOSE)
-                    left(8200)
+                    left(4800)
                     setLeftArmPosition(ArmPosition.UP)
-                    forward(1300)
+                    forward(900)
+                    left(3400)
                     setRightGrabberPosition(GrabberPosition.OPEN)
 
                     // get second stone
+                    right(3200)
                     backward(1000)
                     setLeftArmPosition(ArmPosition.DOWN)
                     setRightArmPosition(ArmPosition.DOWN)
                     setRightGrabberPosition(GrabberPosition.CLOSE)
                     turnToTarget(0.0)
-                    rightAndServos(10500)
+                    rightAndServos(7300)
                     setLeftGrabberPosition(GrabberPosition.OPEN)
                     setRightGrabberPosition(GrabberPosition.OPEN)
-                    forward(1400)
+                    forward(1200)
                     setRightGrabberPosition(GrabberPosition.CLOSE)
                     wait(0.5)
                     setRightArmPosition(ArmPosition.UP)
                     // move stone
-                    backward(1800)
+                    backward(1600)
                     setLeftGrabberPosition(GrabberPosition.CLOSE)
-                    left(9800)
+                    left(7000)
                     setLeftArmPosition(0.4)
                     setRightArmPosition(ArmPosition.UP)
-                    forward(1400)
-                    setLeftGrabberPosition(GrabberPosition.OPEN)
-                    setRightGrabberPosition(GrabberPosition.OPEN)
-                    wait(0.3)
+                    forward(400)
+                    left(3700)
+                    forward(300)
 
                     // move build plate
+                    setLeftGrabberPosition(GrabberPosition.OPEN)
+                    setRightGrabberPosition(GrabberPosition.OPEN)
                     setLeftArmPosition(ArmPosition.DOWN)
                     setRightArmPosition(ArmPosition.DOWN)
                     wait(0.5)
                     backward(3300, timeoutS = 3.0)
                     setLeftArmPosition(ArmPosition.UP)
                     setRightArmPosition(ArmPosition.UP)
-                    right(3000)
+                    right(3200)
                     setLeftArmPosition(ArmPosition.DOWN)
                     setRightArmPosition(ArmPosition.DOWN)
                     setLeftGrabberPosition(GrabberPosition.CLOSE)
@@ -148,44 +156,48 @@ class BlueAuto : LinearOpMode() {
                     right(2500)
                 }
 
+                // pattern C
                 2 -> {
                     // get first stone
                     forward(2400)
-                    right(800)
+                    right(1100)
                     setRightGrabberPosition(GrabberPosition.CLOSE)
                     wait(0.5)
                     setRightArmPosition(ArmPosition.UP)
                     // move stone
                     backward(1300)
                     setLeftGrabberPosition(GrabberPosition.CLOSE)
-                    left(9000)
+                    left(5600)
                     setLeftArmPosition(ArmPosition.UP)
-                    forward(1300)
+                    forward(1000)
+                    left(3400)
                     setRightGrabberPosition(GrabberPosition.OPEN)
 
                     // get second stone
+                    right(3200)
                     backward(1000)
                     setLeftArmPosition(ArmPosition.DOWN)
                     setRightArmPosition(ArmPosition.DOWN)
                     setRightGrabberPosition(GrabberPosition.CLOSE)
                     turnToTarget(0.0)
-                    rightAndServos(11300)
+                    rightAndServos(8600)
                     setLeftGrabberPosition(GrabberPosition.OPEN)
                     setRightGrabberPosition(GrabberPosition.OPEN)
-                    forward(1400)
+                    forward(1200)
                     setRightGrabberPosition(GrabberPosition.CLOSE)
                     wait(0.5)
                     setRightArmPosition(ArmPosition.UP)
                     // move stone
-                    backward(1800)
+                    backward(1600)
                     setLeftGrabberPosition(GrabberPosition.CLOSE)
-                    left(10600)
+                    left(7800)
                     setLeftArmPosition(0.4)
                     setRightArmPosition(ArmPosition.UP)
-                    forward(1400)
+                    forward(700)
+                    left(3400)
                     setLeftGrabberPosition(GrabberPosition.OPEN)
                     setRightGrabberPosition(GrabberPosition.OPEN)
-                    wait(0.3)
+                    forward(300)
 
                     // move build plate
                     setLeftArmPosition(ArmPosition.DOWN)
@@ -194,7 +206,7 @@ class BlueAuto : LinearOpMode() {
                     backward(3300, timeoutS = 3.0)
                     setLeftArmPosition(ArmPosition.UP)
                     setRightArmPosition(ArmPosition.UP)
-                    right(3000)
+                    right(3200)
                     setLeftArmPosition(ArmPosition.DOWN)
                     setRightArmPosition(ArmPosition.DOWN)
                     setLeftGrabberPosition(GrabberPosition.CLOSE)

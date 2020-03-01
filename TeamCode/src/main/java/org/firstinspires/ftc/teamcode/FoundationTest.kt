@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 
 @Autonomous
-class BuildPlateTest : LinearOpMode() {
+class FoundationTest : LinearOpMode() {
     override fun runOpMode() {
         val hardware = AutoHardware(this)
 
