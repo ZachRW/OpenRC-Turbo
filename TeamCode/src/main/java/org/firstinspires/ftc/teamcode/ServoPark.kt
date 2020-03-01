@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 
 @Autonomous
-class Park : LinearOpMode() {
+class ServoPark : LinearOpMode() {
     override fun runOpMode() {
         val hardware = AutoHardware(this)
 
@@ -15,7 +15,7 @@ class Park : LinearOpMode() {
 
         with(hardware) {
             setClawPosition(0.5)
-            setFlickerPosition(0.6)
+            setFlickerPosition(1.0)
 
             setLeftArmPosition(ArmPosition.DOWN)
             setRightArmPosition(ArmPosition.DOWN)

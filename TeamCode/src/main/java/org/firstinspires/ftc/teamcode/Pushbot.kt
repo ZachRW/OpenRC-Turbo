@@ -10,13 +10,13 @@ class Pushbot : OpMode() {
     private var speed = 1.0
     private val reverse = ToggleBoolean()
 
-    private val leftArmPos = Toggle(*ArmPosition.values())
-    private val rightArmPos = Toggle(*ArmPosition.values())
+    private val leftArmPos = Toggle(ArmPosition.DOWN, ArmPosition.UP)
+    private val rightArmPos = Toggle(ArmPosition.DOWN, ArmPosition.UP)
     private val leftGrabberPos = Toggle(*GrabberPosition.values())
     private val rightGrabberPos = Toggle(*GrabberPosition.values())
 
     private val clawPos = Toggle(0.85, 1.0)
-    private val flickerPos = Toggle(1.0, 0.6)
+    private val flickerPos = Toggle(1.0, 0.0)
 
     override fun init() {
         telemetry.addLine("Initializing...")

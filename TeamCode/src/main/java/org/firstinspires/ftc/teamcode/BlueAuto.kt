@@ -18,7 +18,7 @@ class BlueAuto : LinearOpMode() {
 
         with(hardware) {
             setClawPosition(0.5)
-            setFlickerPosition(0.6)
+            setFlickerPosition(1.0)
 
             setLeftArmPosition(ArmPosition.DOWN)
             setRightArmPosition(ArmPosition.DOWN)
