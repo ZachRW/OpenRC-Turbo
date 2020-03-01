@@ -167,7 +167,7 @@ class AutoHardware(private val linearOpMode: LinearOpMode) :
                     wheel.targetPosition - wheel.currentPosition
                 )
 
-                if (wheel.currentPosition > 3000) {
+                if (wheel.currentPosition > 4000) {
                     setLeftGrabberPosition(GrabberPosition.OPEN)
                     setRightGrabberPosition(GrabberPosition.OPEN)
                 }

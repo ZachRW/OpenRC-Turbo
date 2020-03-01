@@ -38,35 +38,37 @@ class RedAuto : LinearOpMode() {
                     right(800)
                     setRightGrabberPosition(GrabberPosition.CLOSE)
                     wait(0.5)
-                    setRightArmPosition(ArmPosition.UP)
+                    setRightArmPosition(ArmPosition.LOW_UP)
                     // move stone
                     backward(900)
                     setLeftGrabberPosition(GrabberPosition.CLOSE)
                     right(5500)
-                    forward(1200)
+                    forward(800)
                     setLeftArmPosition(ArmPosition.UP)
+                    setRightArmPosition(ArmPosition.UP)
                     right(2000)
                     setRightGrabberPosition(GrabberPosition.OPEN)
                     wait(0.5)
 
                     // get second stone
                     left(2000)
-                    backward(1200)
+                    backward(800)
                     setLeftArmPosition(ArmPosition.DOWN)
                     setRightArmPosition(ArmPosition.DOWN)
                     setRightGrabberPosition(GrabberPosition.CLOSE)
                     turnToTarget(0.0)
-                    leftAndServos(6600)
+                    leftAndServos(6900)
                     forward(900)
                     setLeftGrabberPosition(GrabberPosition.CLOSE)
                     wait(0.5)
-                    setRightArmPosition(ArmPosition.UP)
+                    setLeftArmPosition(ArmPosition.LOW_UP)
                     // move stone
-                    backward(1100)
-                    setLeftGrabberPosition(GrabberPosition.CLOSE)
+                    backward(900)
+                    setRightGrabberPosition(GrabberPosition.CLOSE)
                     right(6600)
-                    forward(1200)
+                    forward(800)
                     setLeftArmPosition(ArmPosition.UP)
+                    setRightArmPosition(ArmPosition.UP)
                     right(2000)
                     setRightGrabberPosition(GrabberPosition.OPEN)
                     wait(0.5)
@@ -87,29 +89,30 @@ class RedAuto : LinearOpMode() {
                     right(1500, timeoutS = 2.0)
 
                     // park
-                    forward(700)
+                    forward(800)
                     left(2500)
                 }
 
                 // pattern B
                 1 -> {
                     forward(2550)
-                    setLeftGrabberPosition(GrabberPosition.CLOSE)
+                    setRightGrabberPosition(GrabberPosition.CLOSE)
                     wait(0.5)
-                    setLeftArmPosition(ArmPosition.UP)
+                    setRightArmPosition(ArmPosition.LOW_UP)
                     // move stone
                     backward(900)
-                    setRightGrabberPosition(GrabberPosition.CLOSE)
+                    setLeftGrabberPosition(GrabberPosition.CLOSE)
                     right(6300)
-                    forward(1200)
+                    forward(800)
+                    setLeftArmPosition(ArmPosition.UP)
                     setRightArmPosition(ArmPosition.UP)
                     right(2000)
-                    setLeftGrabberPosition(GrabberPosition.OPEN)
+                    setRightGrabberPosition(GrabberPosition.OPEN)
                     wait(0.5)
 
                     // get second stone
                     left(2000)
-                    backward(1200)
+                    backward(800)
                     setLeftArmPosition(ArmPosition.DOWN)
                     setRightArmPosition(ArmPosition.DOWN)
                     setRightGrabberPosition(GrabberPosition.CLOSE)
@@ -118,13 +121,14 @@ class RedAuto : LinearOpMode() {
                     forward(900)
                     setLeftGrabberPosition(GrabberPosition.CLOSE)
                     wait(0.5)
-                    setRightArmPosition(ArmPosition.UP)
+                    setRightArmPosition(ArmPosition.LOW_UP)
                     // move stone
-                    backward(1100)
+                    backward(900)
                     setLeftGrabberPosition(GrabberPosition.CLOSE)
                     right(7300)
-                    forward(1200)
+                    forward(800)
                     setLeftArmPosition(ArmPosition.UP)
+                    setRightArmPosition(ArmPosition.UP)
                     right(2000)
                     setRightGrabberPosition(GrabberPosition.OPEN)
                     wait(0.5)
@@ -145,22 +149,23 @@ class RedAuto : LinearOpMode() {
                     right(1500, timeoutS = 2.0)
 
                     // park
-                    forward(700)
+                    forward(800)
                     left(2500)
                 }
 
                 // pattern C
                 0 -> {
                     forward(2550)
-                    left(1000)
+                    right(400)
                     setLeftGrabberPosition(GrabberPosition.CLOSE)
                     wait(0.5)
-                    setLeftArmPosition(ArmPosition.UP)
+                    setLeftArmPosition(ArmPosition.LOW_UP)
                     // move stone
                     backward(900)
                     setRightGrabberPosition(GrabberPosition.CLOSE)
-                    right(7300)
-                    forward(1200)
+                    right(6500)
+                    forward(800)
+                    setLeftArmPosition(ArmPosition.UP)
                     setRightArmPosition(ArmPosition.UP)
                     right(2000)
                     setLeftGrabberPosition(GrabberPosition.OPEN)
@@ -168,22 +173,23 @@ class RedAuto : LinearOpMode() {
 
                     // get second stone
                     left(2000)
-                    backward(1200)
+                    backward(800)
                     setLeftArmPosition(ArmPosition.DOWN)
                     setRightArmPosition(ArmPosition.DOWN)
-                    setRightGrabberPosition(GrabberPosition.CLOSE)
+                    setLeftGrabberPosition(GrabberPosition.CLOSE)
                     turnToTarget(0.0)
                     leftAndServos(8300)
                     forward(900)
                     setLeftGrabberPosition(GrabberPosition.CLOSE)
                     wait(0.5)
-                    setRightArmPosition(ArmPosition.UP)
+                    setRightArmPosition(ArmPosition.LOW_UP)
                     // move stone
-                    backward(1100)
+                    backward(900)
                     setLeftGrabberPosition(GrabberPosition.CLOSE)
                     right(8300)
-                    forward(1200)
+                    forward(800)
                     setLeftArmPosition(ArmPosition.UP)
+                    setRightArmPosition(ArmPosition.UP)
                     right(2000)
                     setRightGrabberPosition(GrabberPosition.OPEN)
                     wait(0.5)
@@ -204,7 +210,7 @@ class RedAuto : LinearOpMode() {
                     right(1500, timeoutS = 2.0)
 
                     // park
-                    forward(700)
+                    forward(800)
                     left(2500)
                 }
             }
