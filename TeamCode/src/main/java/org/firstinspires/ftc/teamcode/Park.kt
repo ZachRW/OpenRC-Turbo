@@ -21,9 +21,10 @@ class Park : LinearOpMode() {
             setRightArmPosition(ArmPosition.DOWN)
             setLeftGrabberPosition(GrabberPosition.CLOSE)
             setRightGrabberPosition(GrabberPosition.CLOSE)
-            wait(0.5)
+            wait(2.0)
             setLeftGrabberPosition(GrabberPosition.OPEN)
             setRightGrabberPosition(GrabberPosition.OPEN)
+            wait(3.0)
         }
     }
 }

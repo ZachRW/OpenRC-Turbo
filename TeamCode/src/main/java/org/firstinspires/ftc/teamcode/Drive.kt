@@ -16,7 +16,7 @@ class Drive : OpMode() {
     private val rightGrabberPos = Toggle(*GrabberPosition.values())
 
     private val clawPos = Toggle(0.85, 1.0)
-    private val flickerPos = Toggle(1.0, 0.6)
+    private val flickerPos = Toggle(1.0, 0.0)
 
     override fun init() {
         telemetry.addLine("Initializing...")
