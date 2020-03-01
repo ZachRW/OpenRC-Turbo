@@ -16,6 +16,9 @@ class DrivePark : LinearOpMode() {
         with(hardware) {
             setClawPosition(0.5)
             setFlickerPosition(1.0)
+            setLeftArmPosition(ArmPosition.DOWN)
+            setRightArmPosition(ArmPosition.DOWN)
+            wait(3.0)
 
             forward(1000)
         }
